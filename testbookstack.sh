@@ -20,7 +20,7 @@ export DEBIAN_FRONTEND=noninteractive
 add-apt-repository universe
 apt update
 apt install -y git apache2 curl php7.2-fpm php7.2-curl php7.2-mbstring php7.2-ldap \
-php7.2-tidy php7.2-xml php7.2-zip php7.2-gd php7.2-mysql mysql-server-5.7 libapache2-mod-php7.1
+php7.2-tidy php7.2-xml php7.2-zip php7.2-gd php7.2-mysql mysql-server-5.7 libapache2-mod-php7.2
 
 # Set up database
 DB_PASS="$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 13)"
@@ -73,11 +73,11 @@ a2enmod php7.2
 
 cat >/etc/apache2/sites-available/bookstack.conf <<EOL
 <VirtualHost *:80>
-        ServerName ${DOMAIN}
-  
-	      ServerAdmin webmaster@localhost
-	      DocumentRoot /var/www/bookstack/public/
-        
+	ServerName ${DOMAIN}
+
+	ServerAdmin webmaster@localhost
+	DocumentRoot /var/www/bookstack/public/
+
     <Directory /var/www/bookstack/public/>
         Options Indexes FollowSymLinks
         AllowOverride None
@@ -86,28 +86,28 @@ cat >/etc/apache2/sites-available/bookstack.conf <<EOL
             <IfModule mod_negotiation.c>
                 Options -MultiViews -Indexes
             </IfModule>
-            
+
             RewriteEngine On
-            
+
             # Handle Authorization Header
             RewriteCond %{HTTP:Authorization} .
             RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
-            
+
             # Redirect Trailing Slashes If Not A Folder...
             RewriteCond %{REQUEST_FILENAME} !-d
             RewriteCond %{REQUEST_URI} (.+)/$
             RewriteRule ^ %1 [L,R=301]
-            
+
             # Handle Front Controller...
             RewriteCond %{REQUEST_FILENAME} !-d
             RewriteCond %{REQUEST_FILENAME} !-f
             RewriteRule ^ index.php [L]
         </IfModule>
     </Directory>
-    
-	     ErrorLog ${APACHE_LOG_DIR}/error.log
-	     CustomLog ${APACHE_LOG_DIR}/access.log combined
-       
+
+	ErrorLog ${APACHE_LOG_DIR}/error.log
+	CustomLog ${APACHE_LOG_DIR}/access.log combined
+
 </VirtualHost>
 EOL
 
